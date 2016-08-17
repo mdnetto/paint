@@ -4,32 +4,20 @@ $(document).ready(function() {
     var last_mouse = {x: 0, y: 0};
     var ppts = [];
 
-    function create_canvas(id) {
-        var array = ['q1', 'q2', 'q3', 'q4'];
-
-        for (var id of array) {
-            var canvas  = document.getElementById(id);
-            var context = canvas.getContext('2d')
-        }
-    }
     //create_canvas();
+    var canvas = document.getElementById('q1');
+    var canvas2 = document.getElementById('q2');
+    var canvas3 = document.getElementById('q3');
+    var canvas4 = document.getElementById('q4');
 
-    var canvas  = document.getElementById('q1');
     var context = canvas.getContext('2d');
-
-    var canvas2  = document.getElementById('q2');
     var context2 = canvas2.getContext('2d');
-
-    var canvas3  = document.getElementById('q3');
     var context3 = canvas3.getContext('2d');
-
-    var canvas4  = document.getElementById('q4');
     var context4 = canvas4.getContext('2d');
 
     canvas.addEventListener("mousemove", function(e) {
         last_mouse.x = mouse.x;
         last_mouse.y = mouse.y;
-
         mouse.x = e.pageX - this.offsetLeft;
         mouse.y = e.pageY - this.offsetTop;
     }, false);
@@ -38,7 +26,7 @@ $(document).ready(function() {
         context.lineWidth = 3;
         context.lineJoin = 'round';
         context.lineCap = 'round';
-        context.strokeStyle = '#00ffcc';
+        context.strokeStyle = '#999';
     }
 
     define_line_styles(context);
@@ -81,11 +69,36 @@ $(document).ready(function() {
         context4.stroke();
     };
 
+    var palette = document.getElementById("palette");
+    var swatches = palette.children;
+    var currentSwatch; // we'll keep track of what swatch is active in this.
+
+    for (var i = 0; i < swatches.length; i++) {
+        var swatch = swatches[i];
+        if (i == 0) {
+            currentSwatch = swatch;
+        }
+
+        // when we click on a swatch...
+        swatch.addEventListener("click",function (evt) {
+            this.className = "active"; // give the swatch a class of "active", which will trigger the CSS border.
+            currentSwatch.className = ""; // remove the "active" class from the previously selected swatch
+            currentSwatch = this; // set this to the current swatch so next time we'll take "active" off of this.
+            context.strokeStyle = this.style.backgroundColor; // set the background color for the canvas.
+            context2.strokeStyle = this.style.backgroundColor;
+            context3.strokeStyle = this.style.backgroundColor;
+            context4.strokeStyle = this.style.backgroundColor;
+        });
+    }
+
     var clearBtn = document.getElementById("clear");
+
     clearBtn.addEventListener("click",function(e) {
-        canvas.width = canvas.width; // this is all it takes to clear!
-        canvas2.width = canvas2.width; // this is all it takes to clear!
+        canvas.width = canvas.width;
         context.strokeStyle = '#ffffff';
         context.fillRect(0,0, canvas.width, canvas.height);
     });
 });
+
+/* Make clear work, save work, change color work*/
+//http://stackoverflow.com/questions/11807231/how-to-dynamically-create-javascript-variables-from-an-array

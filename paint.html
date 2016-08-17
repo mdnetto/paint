@@ -1,21 +1,27 @@
 <!DOCTYPE html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Michelle's Manadalas</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="css/styles.css" rel="stylesheet" media="all">
-  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
-  <script src="js/paint_2.js"></script>
+    <meta charset="utf-8">
+    <title>Michelle's Manadalas</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/styles.css" rel="stylesheet" media="all">
+    <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+    <script src="js/paint_2.js"></script>
 </head>
 <body>
-  <div id='sketch'>
-    <canvas id='q1' width=400 height=400></canvas>
-    <canvas id='q2' width=400 height=400></canvas>
-    <canvas id='q3' width=400 height=400></canvas>
-    <canvas id='q4' width=400 height=400></canvas>
-    <a href='#' id='clear'>Clear</a>
-  </div>
+    <div id='sketch'>
+        <canvas class ='top' id='q1' width=400 height=400></canvas><!--
+        --><canvas class ='top' id='q2' width=400 height=400></canvas><!--
+        --><canvas class = 'bottom' id='q3' width=400 height=400></canvas><!--
+        --><canvas class = 'bottom' id='q4' width=400 height=400></canvas>
+    </div>
+    <ul id="palette">
+        <li class="active" style="background:##00ffcc"></li>
+        <li style="background:#ccc"></li>
+        <li style="background:#999"></li>
+        <li style="background:#666"></li>
+        <li style="background:#333"></li>
+    </ul> <a href='#' id='clear'>Clear</a>
 </body>
 </html>
 
