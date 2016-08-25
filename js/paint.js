@@ -1,86 +1,99 @@
-//http://codetheory.in/html5-canvas-drawing-lines-with-smooth-edges/
+$(document).ready(function () { // eslint-disable-line no-undef
+  var mouse = {x: 0, y: 0}
+  var lastMouse = {x: 0, y: 0}
 
-$(document).ready(function() {
+  var canvas = document.getElementById('q1')
+  var canvas2 = document.getElementById('q2')
+  var canvas3 = document.getElementById('q3')
+  var canvas4 = document.getElementById('q4')
 
-    var canvas = document.querySelector('#paint');
-    var ctx = canvas.getContext('2d');
+  var context = canvas.getContext('2d')
+  var context2 = canvas2.getContext('2d')
+  var context3 = canvas3.getContext('2d')
+  var context4 = canvas4.getContext('2d')
 
-    var sketch = document.querySelector('#sketch');
-    var sketch_style = getComputedStyle(sketch);
-    canvas.width = parseInt(sketch_style.getPropertyValue('width'));
-    canvas.height = parseInt(sketch_style.getPropertyValue('height'));
+  canvas.addEventListener('mousemove', function (e) {
+    lastMouse.x = mouse.x
+    lastMouse.y = mouse.y
+    mouse.x = e.pageX - this.offsetLeft
+    mouse.y = e.pageY - this.offsetTop
+  }, false)
 
-    // Creating a tmp canvas
-    var tmp_canvas = document.createElement('canvas');
-    var tmp_ctx = tmp_canvas.getContext('2d');
-    tmp_canvas.id = 'tmp_canvas';
-    tmp_canvas.width = canvas.width;
-    tmp_canvas.height = canvas.height;
+  function defineLineStyles (context) {
+    context.lineWidth = 3
+    context.lineJoin = 'round'
+    context.lineCap = 'round'
+    context.strokeStyle = '#999'
+  }
 
-    sketch.appendChild(tmp_canvas);
+  defineLineStyles(context)
+  defineLineStyles(context2)
+  defineLineStyles(context3)
+  defineLineStyles(context4)
 
-    var mouse = {x: 0, y: 0};
+  canvas.addEventListener('mousedown', function (e) {
+    canvas.addEventListener('mousemove', onPaint, false)
+  }, false)
 
-    // Pencil Points
-    var ppts = [];
+  canvas.addEventListener('mouseup', function () {
+    canvas.removeEventListener('mousemove', onPaint, false)
+  }, false)
 
-    /* Mouse Capturing Work */
-    tmp_canvas.addEventListener('mousemove', function(e) {
-        mouse.x = typeof e.offsetX !== 'undefined' ? e.offsetX : e.layerX;
-        mouse.y = typeof e.offsetY !== 'undefined' ? e.offsetY : e.layerY;
-    }, false);
+  var onPaint = function () {
+    context.beginPath()
+    context.moveTo(lastMouse.x, lastMouse.y)
+    context.lineTo(mouse.x, mouse.y)
+    context.closePath()
+    context.stroke()
 
-  /* Drawing on Paint App */
-    tmp_ctx.lineWidth = 3;
-    tmp_ctx.lineJoin = 'round';
-    tmp_ctx.lineCap = 'round';
-    tmp_ctx.strokeStyle = '#00ffcc';
-    tmp_ctx.fillStyle = '#00ffcc';
+    context2.beginPath()
+    context2.moveTo(400 - lastMouse.x, lastMouse.y)
+    context2.lineTo(400 - mouse.x, mouse.y)
+    context2.closePath()
+    context2.stroke()
 
-    tmp_canvas.addEventListener('mousedown', function(e) {
-        tmp_canvas.addEventListener('mousemove', onPaint, false);
-        mouse.x = typeof e.offsetX !== 'undefined' ? e.offfsetX : e.layerX;
-        mouse.y = typeof e.offsetY !== 'undefined' ? e.offfsetY : e.layerY;
-        //ppts.push({x: mouse.x, y: mouse.y});
-        onPaint(mouse.x, mouse.y);
-        //onPaint();
-    }, false);
+    context3.beginPath()
+    context3.moveTo(lastMouse.x, 400 - lastMouse.y)
+    context3.lineTo(mouse.x, 400 - mouse.y)
+    context3.closePath()
+    context3.stroke()
 
-    tmp_canvas.addEventListener('mouseup', function() {
-        tmp_canvas.removeEventListener('mousemove', onPaint, false);
-        ctx.drawImage(tmp_canvas, 0, 0);
-        tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-        ppts = [];
-    }, false);
+    context4.beginPath()
+    context4.moveTo(400 - lastMouse.x, 400 - lastMouse.y)
+    context4.lineTo(400 - mouse.x, 400 - mouse.y)
+    context4.closePath()
+    context4.stroke()
+  }
 
-    var onPaint() = function() {
-        ppts.push({x: x, y: y});
+  var palette = document.getElementById('palette')
+  var swatches = palette.children
+  var currentSwatch // we'll keep track of what swatch is active in this.
 
-        if (ppts.length < 3) {
-            var b = ppts[0];
-            tmp_ctx.beginPath();
-            tmp_ctx.arc(b.x, b.y, tmp_ctx.lineWidth / 2, 0, Math.PI * 2, !0);
-            tmp_ctx.fill();
-            tmp_ctx.closePath();
-            return;
-        }
+  for (var i = 0; i < swatches.length; i++) {
+    var swatch = swatches[i]
+    if (i === 0) { // eslint-disable-line no-undef
+      currentSwatch = swatch
+    }
 
-      tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-      tmp_ctx.beginPath();
-      tmp_ctx.moveTo(ppts[0].x, ppts[0].y);
+    // when we click on a swatch...
+    swatch.addEventListener('click', function (evt) {
+      this.className = 'active' // give the swatch a class of 'active', which will trigger the CSS border.
+      currentSwatch.className = '' // remove the 'active' class from the previously selected swatch
+      currentSwatch = this // set this to the current swatch so next time we'll take 'active' off of this.
+      context.strokeStyle = this.style.backgroundColor // set the background color for the canvas.
+      context2.strokeStyle = this.style.backgroundColor
+      context3.strokeStyle = this.style.backgroundColor
+      context4.strokeStyle = this.style.backgroundColor
+    })
+  }
 
-      for (var i = 1; i < ppts.length - 2; i++) {
-          var c = (ppts[i].x + ppts[i + 1].x) / 2;
-          var d = (ppts[i].y + ppts[i + 1].y) / 2;
-          tmp_ctx.quadraticCurveTo(ppts[i].x, ppts[i].y, c, d);
-      }
+  var clearBtn = document.getElementById('clear')
 
-      tmp_ctx.quadraticCurveTo(
-          ppts[i].x,
-          ppts[i].y,
-          ppts[i + 1].x,
-          ppts[i + 1].y
-      );
-      tmp_ctx.stroke();
-    };
-});
+  clearBtn.addEventListener('click', function (e) {
+    canvas.width = canvas.width
+    context.strokeStyle = '#002b36'
+    context.fillRect(0, 0, canvas.width, canvas.height)
+  })
+})
+
+/* http://stackoverflow.com/questions/11807231/how - to - dynamically - create - javascript - variables - from - an - array */
