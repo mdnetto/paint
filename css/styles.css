@@ -41,6 +41,12 @@ canvas {
   text-align: center;
 }
 
+.tools-container {
+  display: inline-block;
+  margin: 0 auto;
+  vertical-align: top;
+}
+
 #tools {
   margin: 0 auto;
   vertical-align: top;
